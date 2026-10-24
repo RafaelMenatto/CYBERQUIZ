@@ -55,10 +55,11 @@ Assim, o progresso continua ao trocar de página (inclusive ao ir para os
 minigames) ou recarregar o navegador. A pergunta em andamento não é salva: ao
 voltar, o módulo começa do início.
 
-O botão **REINICIAR** no topo abre um modal temático de confirmação. Ao
-confirmar, todo o progresso do quiz é apagado e a tela volta para a seleção de
-módulos. O zoom é mantido, porque é um ajuste de leitura, e os recordes dos
-minigames não são afetados.
+O botão **REINICIAR PROGRESSO** fica abaixo da grade de módulos e só aparece
+quando há pontos, módulos concluídos ou melhores notas salvas. Ele abre um modal
+temático de confirmação. Ao confirmar, todo o progresso do quiz é apagado e a
+tela volta para a seleção de módulos. O zoom é mantido, porque é um ajuste de
+leitura, e os recordes dos minigames não são afetados.
 
 ## 📱 Celular
 

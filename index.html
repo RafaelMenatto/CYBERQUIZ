@@ -26,7 +26,7 @@
 
     <!-- Header Navigation -->
     <header id="app-header" class="border-b border-gray-800 bg-cyber-dark/80 backdrop-blur-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-wrap items-center justify-between gap-3 relative">
             <div class="brand flex items-center gap-3 cursor-pointer" role="button" tabindex="0" aria-label="Ir para a seleção de módulos" onclick="showModuleSelection()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();showModuleSelection();}">
                 <div class="brand-logo w-10 h-10 rounded-lg bg-cyber-accent/10 border border-cyber-accent flex items-center justify-center text-cyber-accent text-xl">
                     <i class="fa-solid fa-microchip"></i>
@@ -37,7 +37,7 @@
                 </div>
             </div>
 
-            <div id="header-stats" class="hidden xl:flex items-center space-x-3 text-sm font-head">
+            <div id="header-stats" class="hidden xl:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center space-x-3 text-sm font-head">
                 <div class="flex items-center space-x-2 bg-cyber-card px-3 py-1.5 rounded border border-gray-800">
                     <i class="fa-solid fa-trophy text-cyber-yellow"></i>
                     <span class="text-gray-400">Pontos:</span>
@@ -56,9 +56,6 @@
                 </button>
                 <button id="guide-btn" onclick="showGuide()" title="Guia de estudo" aria-label="Abrir guia de estudo" class="cyber-border bg-cyber-card hover:bg-cyber-accent hover:text-black border border-cyber-accent px-4 py-2 text-xs font-head font-bold tracking-widest transition-all">
                     <i class="fa-solid fa-book-open mr-1"></i><span class="btn-label">GUIA</span>
-                </button>
-                <button id="reset-btn" onclick="openResetConfirm()" title="Reiniciar todo o progresso" aria-label="Reiniciar todo o progresso" class="cyber-border bg-cyber-card hover:bg-cyber-red hover:text-black border border-gray-700 hover:border-cyber-red px-4 py-2 text-xs font-head font-bold tracking-widest transition-all">
-                    <i class="fa-solid fa-rotate-right mr-1"></i><span class="btn-label">REINICIAR</span>
                 </button>
                 <a id="modules-btn" href="MiniGame/" onclick="return modulesBtnAction(event)" title="Módulos" aria-label="Ver módulos" class="cyber-border bg-cyber-card hover:bg-cyber-accent hover:text-black border border-cyber-accent px-4 py-2 text-xs font-head font-bold tracking-widest transition-all">
                     <i class="fa-solid fa-cubes mr-1"></i><span class="btn-label">MÓDULOS</span>
@@ -84,6 +81,13 @@
             <!-- Módulos Grid -->
             <div id="modules-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
                 <!-- Injetado dinamicamente via JS -->
+            </div>
+
+            <!-- Reiniciar progresso: fora do cabeçalho e só aparece quando há progresso -->
+            <div id="reset-progress-wrap" class="hidden text-center pt-2">
+                <button id="reset-btn" onclick="openResetConfirm()" title="Reiniciar todo o progresso" aria-label="Reiniciar todo o progresso" class="cyber-border bg-cyber-card hover:bg-cyber-red hover:text-black border border-gray-700 hover:border-cyber-red px-4 py-2 text-xs font-head font-bold tracking-widest transition-all">
+                    <i class="fa-solid fa-rotate-right mr-1"></i><span class="btn-label">REINICIAR PROGRESSO</span>
+                </button>
             </div>
         </section>
 

@@ -190,15 +190,15 @@ function purgeAndReset(card) {
         dangerBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i> APAGANDO...';
     }
 
-    const headerBtn = document.getElementById('reset-btn');
-    if (headerBtn) headerBtn.classList.add('is-resetting');
+    const resetBtn = document.getElementById('reset-btn');
+    if (resetBtn) resetBtn.classList.add('is-resetting');
 
     window.setTimeout(() => {
         resetProgress();          // apaga estado + localStorage e volta à grade
         closeResetConfirm();      // fade-out do modal
 
-        if (headerBtn) {
-            window.setTimeout(() => headerBtn.classList.remove('is-resetting'), 700);
+        if (resetBtn) {
+            window.setTimeout(() => resetBtn.classList.remove('is-resetting'), 700);
         }
     }, 620);
 }
@@ -451,6 +451,26 @@ function renderImageCredits() {
 function updateGlobalStats() {
     $('#global-score').innerText = State.globalScore;
     $('#modules-completed').innerText = `${State.completedModules.size}/${MODULES.length}`;
+    updateResetBtnVisibility();
+}
+
+/*
+ * O botão REINICIAR só faz sentido quando existe algo para apagar.
+ * Zoom e último componente do guia são ajustes de leitura, não progresso,
+ * então não contam para a exibição do botão.
+ */
+function hasProgress() {
+    return State.globalScore > 0
+        || State.completedModules.size > 0
+        || Object.keys(State.moduleScores).length > 0;
+}
+
+function updateResetBtnVisibility() {
+    const wrap = document.getElementById('reset-progress-wrap');
+    if (!wrap) return;
+    const show = hasProgress();
+    wrap.classList.toggle('hidden', !show);
+    wrap.setAttribute('aria-hidden', show ? 'false' : 'true');
 }
 
 /* =============================================================================
