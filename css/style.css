@@ -195,6 +195,24 @@ body {
     object-fit: cover;
 }
 
+/*
+ * Fotos com proporções extremas (SSD, placa-mãe, placa de vídeo e cooler)
+ * ficam cortadas no desktop, onde os cards são estreitos e o banner é baixo.
+ * A partir de lg elas aparecem inteiras, centralizadas, com o fundo escuro
+ * preenchendo as sobras.
+ */
+@media (min-width: 1024px) {
+    #modules-grid .module-media.media-contain img {
+        object-fit: contain;
+        padding: 0.35rem;
+    }
+
+    #guide-content .guide-banner.guide-contain img {
+        object-fit: contain;
+        padding: 0.5rem;
+    }
+}
+
 /* =============================================================================
  *  RESPONSIVIDADE - CELULAR (até 639px)
  * -----------------------------------------------------------------------------

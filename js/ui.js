@@ -9,6 +9,13 @@
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => [...document.querySelectorAll(sel)];
 
+/*
+ * Imagens com proporções extremas (muito largas ou muito altas) são cortadas
+ * pelo object-cover nos cards em 5 colunas do desktop. Nesses módulos a foto
+ * aparece inteira (object-contain) a partir do breakpoint lg.
+ */
+const CONTAIN_IMAGE_MODULES = new Set(['storage', 'mobo', 'gpu', 'cooling']);
+
 /* ---------- Rótulo do módulo (MÓDULO 01, MÓDULO 02, ...) ---------- */
 function moduleLabel(index) {
     return `MÓDULO ${String(index + 1).padStart(2, '0')}`;
@@ -303,7 +310,7 @@ function openGuide(moduleId) {
     renderGuideNav(mod.id);
 
     $('#guide-content').innerHTML = `
-        <div class="guide-banner relative rounded-lg overflow-hidden border border-gray-800 bg-cyber-dark mb-5">
+        <div class="guide-banner relative rounded-lg overflow-hidden border border-gray-800 bg-cyber-dark mb-5${CONTAIN_IMAGE_MODULES.has(mod.id) ? ' guide-contain' : ''}">
             <img src="${mod.image}" alt="${mod.imageAlt}" class="w-full h-full object-cover" decoding="async"
                  onload="this.style.display='';this.nextElementSibling.style.display='none';"
                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
@@ -397,7 +404,7 @@ function renderModulesGrid() {
         card.innerHTML = `
             <div class="absolute top-0 right-0 w-20 h-20 -mr-6 -mt-6 bg-white/5 rounded-full blur-xl group-hover:bg-cyber-accent/20 transition-all"></div>
             <div>
-                <div class="module-media relative h-36 rounded-lg overflow-hidden mb-4 border border-gray-800 bg-cyber-dark">
+                <div class="module-media relative h-36 rounded-lg overflow-hidden mb-4 border border-gray-800 bg-cyber-dark${CONTAIN_IMAGE_MODULES.has(mod.id) ? ' media-contain' : ''}">
                     <img src="${mod.image}" alt="${mod.imageAlt}" decoding="async"
                          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                          onload="this.style.display='';this.nextElementSibling.style.display='none';"
