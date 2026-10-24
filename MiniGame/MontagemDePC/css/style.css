@@ -587,6 +587,11 @@ h1 i { color: var(--accent); margin-right: 6px; }
 @media (max-width: 640px) {
     :root { --gap: 12px; --header-h: 60px; }
 
+    /* interface ~12,5% menor no celular: o painel lateral e a lista de peças
+       deixam de estourar a largura da tela */
+    html { font-size: 87.5%; }
+    body { font-size: 0.95rem; }
+
     .topbar { padding: 8px 12px; }
     .ghost-btn span { display: none; }
     .ghost-btn { padding: 0 11px; }
@@ -595,13 +600,33 @@ h1 i { color: var(--accent); margin-right: 6px; }
     main { padding: 12px 12px 20px; }
     .panel { padding: 13px; }
 
+    h1 { font-size: 0.95rem; }
+    .lead { font-size: 0.8rem; }
+
     .build-list { grid-template-columns: minmax(0, 1fr); }
     .build-item { grid-template-columns: 22px 38px minmax(0, 1fr) 34px; padding: 6px 7px; gap: 7px; }
     .build-thumb { width: 38px; height: 32px; }
     .build-info strong { font-size: 0.78rem; }
+    .build-info small { font-size: 0.66rem; }
+    .build-info strong, .build-info small { overflow-wrap: anywhere; }
+
+    .build-message { font-size: 0.76rem; }
+    .practices { font-size: 0.74rem; }
 
     .canvas-host { height: clamp(200px, 30vh, 300px); }
     .btn-primary { min-height: 42px; padding: 0 15px; font-size: 0.78rem; }
+}
+
+@media (max-width: 380px) {
+    html { font-size: 82.5%; }
+
+    .brand-text strong { font-size: 0.82rem; }
+    .build-item { grid-template-columns: 20px 34px minmax(0, 1fr) 32px; gap: 6px; }
+    .build-thumb { width: 34px; height: 30px; }
+    .build-info strong { font-size: 0.76rem; }
+    .build-info small { font-size: 0.64rem; }
+    .overlay-card { padding: 14px 12px; }
+    .overlay-stats li { min-width: 72px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

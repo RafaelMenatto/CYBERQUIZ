@@ -238,12 +238,6 @@ function finishModule() {
             State.globalScore += State.moduleScore - previousBest;
             State.moduleScores[mod.id] = State.moduleScore;
         }
-<<<<<<< HEAD
-        if (typeof saveState === 'function') saveState();
-    } else {
-        if (typeof saveState === 'function') saveState();
-=======
->>>>>>> a7d8cd93f1f2c9e6158539ccc60371634b51f844
     }
 
     $('#progress-bar').style.width = '100%';
@@ -258,11 +252,7 @@ function finishModule() {
     const statusElement = $('#result-status');
     if (passed) {
         statusElement.innerText = 'MÓDULO CONCLUÍDO';
-<<<<<<< HEAD
-        statusElement.className = 'text-xs font-mono text-cyber-green tracking-widest uppercase neon-glow';
-=======
         statusElement.className = 'text-xs font-mono text-cyber-green tracking-widest uppercase';
->>>>>>> a7d8cd93f1f2c9e6158539ccc60371634b51f844
     } else {
         statusElement.innerText = `MÓDULO NÃO CONCLUÍDO - MÍNIMO ${CONFIG.quiz.passScore}/${CONFIG.quiz.questionsPerModule}`;
         statusElement.className = 'text-xs font-mono text-cyber-red tracking-widest uppercase';
@@ -281,10 +271,7 @@ function finishModule() {
     }
 
     updateGlobalStats();
-<<<<<<< HEAD
-    if (typeof renderModulesGrid === 'function') renderModulesGrid();
-=======
->>>>>>> a7d8cd93f1f2c9e6158539ccc60371634b51f844
+    saveProgress();
 
     /* Comemoração: o PC ganha a peça do módulo recém-concluído */
     if (passed && typeof celebrateModule === 'function') {

@@ -188,7 +188,7 @@ const MemoryGame = (() => {
                   '</span>'
                 : '<span class="mem-face mem-front">' +
                       '<span class="mem-photo">' +
-                          '<img src="' + CFG.paths.images + comp.image + '" alt="' + comp.name + '" loading="lazy" draggable="false">' +
+                          '<img src="' + CFG.paths.images + comp.image + '" alt="' + comp.name + '" draggable="false">' +
                       '</span>' +
                       '<span class="mem-label">' +
                           '<span class="mem-name">' + comp.short + '</span>' +

@@ -23,20 +23,22 @@ function showScreen(screenId) {
         document.getElementById(id).classList.toggle('hidden', id !== screenId);
     });
     updateModulesBtn();
-<<<<<<< HEAD
-    updateGuideBtnVisibility();
+    updateGuideBtn();
 }
 
-function updateGuideBtnVisibility() {
-    const guideBtn = document.getElementById('guide-header-btn') || document.querySelector('button[onclick="showGuide()"]');
-    if (!guideBtn) return;
-    if (currentScreenId === 'guide-screen') {
-        guideBtn.style.display = 'none';
-    } else {
-        guideBtn.style.display = '';
-    }
-=======
->>>>>>> a7d8cd93f1f2c9e6158539ccc60371634b51f844
+/*
+ * Na tela do GUIA o próprio botão GUIA some (já estamos nela);
+ * em qualquer outra tela ele volta a aparecer.
+ */
+function updateGuideBtn() {
+    const btn = document.getElementById('guide-btn');
+    if (!btn) return;
+    const onGuide = currentScreenId === 'guide-screen';
+    // o CSS do header no celular define display:inline-flex e venceria a
+    // classe .hidden; por isso o display também é controlado inline
+    btn.classList.toggle('hidden', onGuide);
+    btn.style.display = onGuide ? 'none' : '';
+    btn.setAttribute('aria-hidden', onGuide ? 'true' : 'false');
 }
 
 /*
@@ -71,6 +73,182 @@ function showModuleSelection() {
 }
 
 /* =============================================================================
+ *  REINICIAR PROGRESSO - modal temático + animação de purga
+ * ============================================================================= */
+
+const RESET_CONFIRM_ID = 'reset-confirm';
+let resetLastFocus = null;
+
+/* Abre o modal no lugar do confirm() nativo. */
+function openResetConfirm() {
+    if (document.getElementById(RESET_CONFIRM_ID)) return;
+
+    resetLastFocus = document.activeElement;
+
+    const wrap = document.createElement('div');
+    wrap.id = RESET_CONFIRM_ID;
+    wrap.className = 'reset-confirm is-open';
+    wrap.setAttribute('role', 'dialog');
+    wrap.setAttribute('aria-modal', 'true');
+    wrap.setAttribute('aria-labelledby', 'reset-confirm-title');
+    wrap.setAttribute('aria-describedby', 'reset-confirm-text');
+
+    wrap.innerHTML = `
+        <div class="reset-backdrop" data-reset-cancel></div>
+        <div class="reset-card" role="document">
+            <span class="reset-scan" aria-hidden="true"></span>
+
+            <p class="reset-kicker">
+                <i class="fa-solid fa-triangle-exclamation" aria-hidden="true"></i>
+                PROTOCOLO DE LIMPEZA // RESET
+            </p>
+
+            <div class="reset-icon" aria-hidden="true">
+                <i class="fa-solid fa-rotate-right"></i>
+            </div>
+
+            <h2 class="reset-title" id="reset-confirm-title">REINICIAR PROGRESSO?</h2>
+            <p class="reset-text" id="reset-confirm-text">
+                Os pontos, módulos concluídos e melhores notas deste laboratório
+                serão apagados.
+            </p>
+
+            <div class="reset-stats" aria-hidden="true">
+                <div><span>PONTOS</span><strong>${State.globalScore}</strong></div>
+                <div><span>CONCLUÍDOS</span><strong>${State.completedModules.size}/${MODULES.length}</strong></div>
+            </div>
+
+            <p class="reset-note">
+                <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                Esta ação não pode ser desfeita.
+            </p>
+
+            <div class="reset-actions">
+                <button type="button" class="reset-btn reset-btn-cancel" data-reset-cancel>
+                    <i class="fa-solid fa-xmark" aria-hidden="true"></i> CANCELAR
+                </button>
+                <button type="button" class="reset-btn reset-btn-danger" data-reset-confirm>
+                    <i class="fa-solid fa-trash-can" aria-hidden="true"></i> APAGAR TUDO
+                </button>
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(wrap);
+    document.body.classList.add('reset-open');
+
+    const card = wrap.querySelector('.reset-card');
+    const cancelBtn = wrap.querySelector('[data-reset-cancel].reset-btn');
+    if (cancelBtn) cancelBtn.focus();
+
+    const onKey = (ev) => {
+        if (ev.key === 'Escape') {
+            ev.preventDefault();
+            if (!card.classList.contains('is-purging')) closeResetConfirm();
+            return;
+        }
+        if (ev.key !== 'Tab') return;
+
+        const focusable = [...wrap.querySelectorAll('button')].filter((el) => el.offsetParent !== null);
+        if (!focusable.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (ev.shiftKey && document.activeElement === first) {
+            ev.preventDefault();
+            last.focus();
+        } else if (!ev.shiftKey && document.activeElement === last) {
+            ev.preventDefault();
+            first.focus();
+        }
+    };
+    wrap._onKey = onKey;
+    document.addEventListener('keydown', onKey);
+
+    wrap.addEventListener('click', (ev) => {
+        if (card.classList.contains('is-purging')) return;
+        if (ev.target.closest('[data-reset-cancel]')) {
+            ev.preventDefault();
+            closeResetConfirm();
+        } else if (ev.target.closest('[data-reset-confirm]')) {
+            ev.preventDefault();
+            purgeAndReset(card);
+        }
+    });
+}
+
+/* Animação de purga: o cartão "glitcha" e some antes de apagar de verdade. */
+function purgeAndReset(card) {
+    if (!card || card.classList.contains('is-purging')) return;
+    card.classList.add('is-purging');
+
+    const title = card.querySelector('.reset-title');
+    if (title) title.textContent = 'LIMPANDO DADOS...';
+
+    const dangerBtn = card.querySelector('.reset-btn-danger');
+    if (dangerBtn) {
+        dangerBtn.disabled = true;
+        dangerBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin" aria-hidden="true"></i> APAGANDO...';
+    }
+
+    const headerBtn = document.getElementById('reset-btn');
+    if (headerBtn) headerBtn.classList.add('is-resetting');
+
+    window.setTimeout(() => {
+        resetProgress();          // apaga estado + localStorage e volta à grade
+        closeResetConfirm();      // fade-out do modal
+
+        if (headerBtn) {
+            window.setTimeout(() => headerBtn.classList.remove('is-resetting'), 700);
+        }
+    }, 620);
+}
+
+/* Fecha o modal (com fade-out, salvo quando `immediate`). */
+function closeResetConfirm(immediate) {
+    const wrap = document.getElementById(RESET_CONFIRM_ID);
+    if (!wrap) return;
+
+    if (wrap._onKey) document.removeEventListener('keydown', wrap._onKey);
+
+    const finish = () => {
+        wrap.remove();
+        document.body.classList.remove('reset-open');
+        if (resetLastFocus && document.contains(resetLastFocus) && resetLastFocus.offsetParent !== null) {
+            resetLastFocus.focus();
+        }
+        resetLastFocus = null;
+    };
+
+    if (immediate) {
+        finish();
+        return;
+    }
+
+    wrap.classList.add('is-closing');
+    window.setTimeout(finish, 220);
+}
+
+/*
+ * Apaga todo o progresso do quiz (pontos, notas e módulos concluídos), limpa
+ * o que está salvo e volta para a grade. O zoom é mantido, porque é um ajuste
+ * de leitura e não progresso.
+ */
+function resetProgress() {
+    State.globalScore = 0;
+    State.moduleScores = {};
+    State.completedModules.clear();
+    State.moduleIndex = 0;
+    State.questionIndex = 0;
+    State.moduleQuestions = [];
+    State.moduleScore = 0;
+    State.answered = false;
+    State.guideModuleId = MODULES[0].id;
+
+    clearProgress();
+    showModuleSelection();
+}
+
+/* =============================================================================
  *  GUIA DE ESTUDO
  *  Leitura de apoio por componente. O conteúdo fica em js/guide-data.js (GUIDE).
  * ============================================================================= */
@@ -78,10 +256,6 @@ function showModuleSelection() {
 /* Abre a tela do guia (sem argumento: reabre o último componente lido). */
 function showGuide(moduleId) {
     showScreen('guide-screen');
-<<<<<<< HEAD
-    updateGuideBtnVisibility();
-=======
->>>>>>> a7d8cd93f1f2c9e6158539ccc60371634b51f844
     openGuide(moduleId || State.guideModuleId || MODULES[0].id);
 }
 
@@ -125,11 +299,17 @@ function openGuide(moduleId) {
     const next = MODULES[(index + 1) % MODULES.length];
 
     State.guideModuleId = mod.id;
+    saveProgress();
     renderGuideNav(mod.id);
 
     $('#guide-content').innerHTML = `
         <div class="guide-banner relative rounded-lg overflow-hidden border border-gray-800 bg-cyber-dark mb-5">
-            <img src="${mod.image}" alt="${mod.imageAlt}" class="w-full h-full object-cover" loading="lazy" decoding="async">
+            <img src="${mod.image}" alt="${mod.imageAlt}" class="w-full h-full object-cover" decoding="async"
+                 onload="this.style.display='';this.nextElementSibling.style.display='none';"
+                 onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+            <div class="hidden absolute inset-0 items-center justify-center" style="color:${mod.color}" data-guide-fallback aria-hidden="true">
+                <i class="fa-solid ${mod.icon} text-6xl opacity-40"></i>
+            </div>
             <div class="absolute inset-0 bg-gradient-to-t from-cyber-card via-cyber-card/40 to-transparent"></div>
             <div class="absolute bottom-3 left-4 right-4 flex flex-wrap items-end justify-between gap-2">
                 <div>
@@ -137,9 +317,9 @@ function openGuide(moduleId) {
                     <h2 class="font-head text-2xl md:text-3xl font-extrabold text-white">${mod.name}</h2>
                 </div>
                 <span class="text-xs font-mono px-2 py-1 rounded uppercase ${isCompleted
-                    ? 'bg-cyber-green/25 text-cyber-green border border-cyber-green/40'
+                    ? 'module-done-badge'
                     : 'bg-gray-900/80 text-gray-400 border border-gray-700'}">
-                    ${isCompleted ? '<i class="fa-solid fa-check mr-1"></i> CONCLUÍDO' : 'NÃO CONCLUÍDO'}
+                    ${isCompleted ? '<i class="fa-solid fa-circle-check"></i> CONCLUÍDO' : 'NÃO CONCLUÍDO'}
                 </span>
             </div>
         </div>
@@ -201,13 +381,7 @@ function renderModulesGrid() {
         const isCompleted = State.completedModules.has(mod.id);
 
         const card = document.createElement('div');
-<<<<<<< HEAD
-        card.className = isCompleted
-            ? 'module-card cyber-border bg-cyber-card border-2 border-cyber-green p-5 cursor-pointer transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 relative overflow-hidden neon-glow shadow-[0_0_25px_rgba(0,255,102,0.25)]'
-            : 'module-card cyber-border bg-cyber-card border border-gray-800 p-5 cursor-pointer transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 relative overflow-hidden neon-glow-hover';
-=======
-        card.className = 'module-card cyber-border bg-cyber-card border border-gray-800 p-5 cursor-pointer transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 relative overflow-hidden neon-glow-hover';
->>>>>>> a7d8cd93f1f2c9e6158539ccc60371634b51f844
+        card.className = `module-card cyber-border bg-cyber-card border border-gray-800 p-5 cursor-pointer transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1 relative overflow-hidden neon-glow-hover${isCompleted ? ' is-completed' : ''}`;
         card.onclick = () => startModule(index);
         // acessível por teclado (o cartão não é um <button> para não herdar o estilo do navegador)
         card.setAttribute('role', 'button');
@@ -224,23 +398,18 @@ function renderModulesGrid() {
             <div class="absolute top-0 right-0 w-20 h-20 -mr-6 -mt-6 bg-white/5 rounded-full blur-xl group-hover:bg-cyber-accent/20 transition-all"></div>
             <div>
                 <div class="module-media relative h-36 rounded-lg overflow-hidden mb-4 border border-gray-800 bg-cyber-dark">
-                    <img src="${mod.image}" alt="${mod.imageAlt}" loading="lazy" decoding="async"
+                    <img src="${mod.image}" alt="${mod.imageAlt}" decoding="async"
                          class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                         onload="this.style.display='';this.nextElementSibling.style.display='none';"
                          onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
                     <div class="hidden absolute inset-0 items-center justify-center text-4xl" style="color:${mod.color}" data-fallback>
                         <i class="fa-solid ${mod.icon}"></i>
                     </div>
                     <div class="absolute inset-0 bg-gradient-to-t from-cyber-card via-cyber-card/10 to-transparent pointer-events-none"></div>
-                    <span class="absolute top-2 right-2 text-xs font-mono px-2 py-1 rounded backdrop-blur-sm uppercase ${isCompleted
-<<<<<<< HEAD
-                        ? 'bg-cyber-green/30 text-cyber-green border border-cyber-green shadow-[0_0_10px_rgba(0,255,102,0.4)]'
+                    <span class="absolute top-2 right-2 text-xs font-mono px-2 py-1 rounded uppercase ${isCompleted
+                        ? 'module-done-badge'
                         : 'bg-gray-900/80 text-gray-300 border border-gray-700'}">
-                        ${isCompleted ? '<i class="fa-solid fa-circle-check mr-1"></i> CONCLUÍDO' : moduleLabel(index)}
-=======
-                        ? 'bg-cyber-green/25 text-cyber-green border border-cyber-green/40'
-                        : 'bg-gray-900/80 text-gray-300 border border-gray-700'}">
-                        ${isCompleted ? '<i class="fa-solid fa-check mr-1"></i> CONCLUÍDO' : moduleLabel(index)}
->>>>>>> a7d8cd93f1f2c9e6158539ccc60371634b51f844
+                        ${isCompleted ? '<i class="fa-solid fa-circle-check"></i> CONCLUÍDO' : moduleLabel(index)}
                     </span>
                 </div>
                 <h3 class="font-head font-bold text-lg text-white group-hover:text-cyber-accent transition-colors mb-1">${mod.name}</h3>
@@ -298,8 +467,5 @@ function applyZoom() {
 function cycleZoom() {
     State.zoomIndex = (State.zoomIndex + 1) % CONFIG.ui.zoomLevels.length;
     applyZoom();
-<<<<<<< HEAD
-    if (typeof saveState === 'function') saveState();
-=======
->>>>>>> a7d8cd93f1f2c9e6158539ccc60371634b51f844
+    saveProgress();
 }

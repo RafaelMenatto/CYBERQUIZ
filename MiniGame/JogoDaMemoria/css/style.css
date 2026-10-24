@@ -591,6 +591,11 @@ h1 i { color: var(--accent); margin-right: 6px; }
 @media (max-width: 640px) {
     :root { --header-h: 60px; }
 
+    /* interface ~12,5% menor no celular: evita que títulos e textos
+       empurrem o layout para fora da tela */
+    html { font-size: 87.5%; }
+    body { font-size: 0.95rem; }
+
     .topbar { padding: 8px 12px; }
     .ghost-btn span { display: none; }
     .ghost-btn { padding: 0 11px; }
@@ -605,13 +610,15 @@ h1 i { color: var(--accent); margin-right: 6px; }
     .stat strong { font-size: 0.95rem; }
 
     .board { gap: 6px; }
-    .mem-name { font-size: 0.54rem; padding: 3px 2px 4px; letter-spacing: 0.01em; }
+    /* os rótulos das cartas já são pequenos: mantém o tamanho legível
+       mesmo com a escala global reduzida */
+    .mem-name { font-size: 0.62rem; padding: 3px 2px 4px; letter-spacing: 0.01em; }
     .mem-photo { padding: 3px; }
     .mem-func { padding: 6px 5px; gap: 6px; }
     /* ícone menor: sobra vertical para o texto da função */
     .mem-func i { font-size: 0.9rem; }
-    .mem-func-text { font-size: 0.56rem; }
-    .mem-func-tag { font-size: 0.5rem; padding: 3px 2px 4px; letter-spacing: 0.04em; }
+    .mem-func-text { font-size: 0.62rem; overflow-wrap: anywhere; }
+    .mem-func-tag { font-size: 0.56rem; padding: 3px 2px 4px; letter-spacing: 0.04em; }
 
     .overlay-card { padding: 16px 14px; }
     .overlay-stats li { min-width: 76px; }
@@ -619,9 +626,10 @@ h1 i { color: var(--accent); margin-right: 6px; }
 }
 
 @media (max-width: 380px) {
-    .mem-name { font-size: 0.5rem; }
-    .mem-func-text { font-size: 0.52rem; }
-    .mem-func-tag { font-size: 0.46rem; }
+    html { font-size: 82.5%; }
+    .mem-name { font-size: 0.64rem; }
+    .mem-func-text { font-size: 0.62rem; }
+    .mem-func-tag { font-size: 0.58rem; }
     /* tela muito estreita: a função fica só com o texto (o ícone come altura) */
     .mem-func i { display: none; }
 }

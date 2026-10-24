@@ -189,14 +189,8 @@ main {
 .game-card h2 {
     margin: 4px 0 0;
     font-family: var(--font-display);
-<<<<<<< HEAD
-    font-size: clamp(0.95rem, 3.2vw, 1.3rem);
-    letter-spacing: 0.03em;
-    word-break: break-word;
-=======
     font-size: clamp(1.05rem, 3vw, 1.3rem);
     letter-spacing: 0.03em;
->>>>>>> a7d8cd93f1f2c9e6158539ccc60371634b51f844
 }
 
 .game-card p { margin: 0; color: var(--muted); font-size: 0.86rem; }

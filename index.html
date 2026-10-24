@@ -50,30 +50,18 @@
                 </div>
             </div>
 
-<<<<<<< HEAD
-            <div class="header-actions flex items-center gap-1.5 md:gap-2 flex-wrap justify-center sm:justify-end">
-                <button id="zoom-btn" onclick="cycleZoom()" title="Ajustar tamanho da interface" aria-label="Ajustar tamanho da interface" class="cyber-border bg-cyber-card hover:bg-cyber-accent hover:text-black border border-cyber-accent min-h-[34px] px-2 md:px-3 text-[0.65rem] md:text-xs font-head font-bold transition-all inline-flex items-center">
-                    <i class="fa-solid fa-magnifying-glass-plus mr-1"></i><span id="zoom-label">100%</span>
-                </button>
-                <button onclick="if(typeof resetProgress==='function'){if(confirm('Tem certeza que deseja reiniciar todo o progresso?')) resetProgress();}" title="Reiniciar progresso" aria-label="Reiniciar progresso" class="cyber-border bg-cyber-card hover:bg-cyber-red hover:text-white border border-cyber-red/60 min-h-[34px] px-2 md:px-3 text-[0.65rem] md:text-xs font-head font-bold transition-all inline-flex items-center">
-                    <i class="fa-solid fa-rotate-left mr-1"></i><span class="btn-label hidden sm:inline">REINICIAR</span>
-                </button>
-                <button id="guide-header-btn" onclick="showGuide()" title="Guia de estudo" aria-label="Abrir guia de estudo" class="cyber-border bg-cyber-card hover:bg-cyber-accent hover:text-black border border-cyber-accent min-h-[34px] px-2 md:px-3 text-[0.65rem] md:text-xs font-head font-bold tracking-widest transition-all inline-flex items-center">
-                    <i class="fa-solid fa-book-open mr-1"></i><span class="btn-label hidden sm:inline">GUIA</span>
-                </button>
-                <a id="modules-btn" href="MiniGame/" onclick="return modulesBtnAction(event)" title="Módulos" aria-label="Ver módulos" class="cyber-border bg-cyber-card hover:bg-cyber-accent hover:text-black border border-cyber-accent min-h-[34px] px-2 md:px-3 text-[0.65rem] md:text-xs font-head font-bold tracking-widest transition-all inline-flex items-center">
-                    <i class="fa-solid fa-cubes mr-1"></i><span class="btn-label hidden sm:inline">MÓDULOS</span>
-=======
             <div class="header-actions flex items-center gap-3">
                 <button id="zoom-btn" onclick="cycleZoom()" title="Ajustar tamanho da interface" aria-label="Ajustar tamanho da interface" class="cyber-border bg-cyber-card hover:bg-cyber-accent hover:text-black border border-cyber-accent px-3 py-2 text-xs font-head font-bold transition-all">
                     <i class="fa-solid fa-magnifying-glass-plus mr-1"></i><span id="zoom-label">100%</span>
                 </button>
-                <button onclick="showGuide()" title="Guia de estudo" aria-label="Abrir guia de estudo" class="cyber-border bg-cyber-card hover:bg-cyber-accent hover:text-black border border-cyber-accent px-4 py-2 text-xs font-head font-bold tracking-widest transition-all">
+                <button id="guide-btn" onclick="showGuide()" title="Guia de estudo" aria-label="Abrir guia de estudo" class="cyber-border bg-cyber-card hover:bg-cyber-accent hover:text-black border border-cyber-accent px-4 py-2 text-xs font-head font-bold tracking-widest transition-all">
                     <i class="fa-solid fa-book-open mr-1"></i><span class="btn-label">GUIA</span>
+                </button>
+                <button id="reset-btn" onclick="openResetConfirm()" title="Reiniciar todo o progresso" aria-label="Reiniciar todo o progresso" class="cyber-border bg-cyber-card hover:bg-cyber-red hover:text-black border border-gray-700 hover:border-cyber-red px-4 py-2 text-xs font-head font-bold tracking-widest transition-all">
+                    <i class="fa-solid fa-rotate-right mr-1"></i><span class="btn-label">REINICIAR</span>
                 </button>
                 <a id="modules-btn" href="MiniGame/" onclick="return modulesBtnAction(event)" title="Módulos" aria-label="Ver módulos" class="cyber-border bg-cyber-card hover:bg-cyber-accent hover:text-black border border-cyber-accent px-4 py-2 text-xs font-head font-bold tracking-widest transition-all">
                     <i class="fa-solid fa-cubes mr-1"></i><span class="btn-label">MÓDULOS</span>
->>>>>>> a7d8cd93f1f2c9e6158539ccc60371634b51f844
                 </a>
             </div>
         </div>
@@ -259,12 +247,14 @@
            config.js  -> variáveis centralizadas (CONFIG)
            state.js   -> estado mutável da sessão (State)
            data.js    -> conteúdo dos módulos e das perguntas (MODULES)
+           storage.js -> progresso salvo no localStorage
            ui.js      -> renderização da interface
            quiz.js    -> lógica das perguntas e da aprovação
            app.js     -> inicialização
          ======================================================================= -->
     <script src="js/state.js"></script>
     <script src="js/data.js"></script>
+    <script src="js/storage.js"></script>
     <script src="js/guide-data.js"></script>
     <script src="js/ui.js"></script>
     <script src="js/quiz.js"></script>

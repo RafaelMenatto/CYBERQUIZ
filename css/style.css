@@ -1020,3 +1020,438 @@ body.celebrate-open {
         filter: none;
     }
 }
+
+/* =============================================================================
+ *  MÓDULOS CONCLUÍDOS - selo de destaque
+ * ============================================================================= */
+
+.module-done-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    color: #00ff66;
+    background: linear-gradient(135deg, rgba(2, 14, 9, 0.97), rgba(0, 255, 102, 0.2));
+    border: 1px solid rgba(0, 255, 102, 0.9);
+    box-shadow:
+        0 0 0 1px rgba(0, 0, 0, 0.55),
+        0 0 14px rgba(0, 255, 102, 0.45),
+        inset 0 0 10px rgba(0, 255, 102, 0.12);
+    text-shadow: 0 0 8px rgba(0, 255, 102, 0.7);
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    animation: module-done-pulse 2.6s ease-in-out infinite;
+}
+
+.module-done-badge i {
+    color: #00ff66;
+    filter: drop-shadow(0 0 5px rgba(0, 255, 102, 0.9));
+}
+
+#modules-grid .module-card.is-completed {
+    border-color: rgba(0, 255, 102, 0.5);
+    box-shadow:
+        0 0 0 1px rgba(0, 255, 102, 0.12),
+        0 0 26px rgba(0, 255, 102, 0.1);
+}
+
+#modules-grid .module-card.is-completed:hover {
+    border-color: rgba(0, 255, 102, 0.8);
+    box-shadow:
+        0 0 0 1px rgba(0, 255, 102, 0.25),
+        0 0 34px rgba(0, 255, 102, 0.2);
+}
+
+@keyframes module-done-pulse {
+    0%, 100% {
+        box-shadow:
+            0 0 0 1px rgba(0, 0, 0, 0.55),
+            0 0 12px rgba(0, 255, 102, 0.35),
+            inset 0 0 8px rgba(0, 255, 102, 0.1);
+    }
+    50% {
+        box-shadow:
+            0 0 0 1px rgba(0, 0, 0, 0.55),
+            0 0 22px rgba(0, 255, 102, 0.6),
+            inset 0 0 14px rgba(0, 255, 102, 0.2);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .module-done-badge {
+        animation: none !important;
+    }
+}
+
+/* =============================================================================
+ *  MODAL DE REINICIAR PROGRESSO
+ *  Substitui o confirm() nativo por um cartão temático com "purga" animada.
+ * ============================================================================= */
+
+body.reset-open {
+    overflow: hidden;
+}
+
+.reset-confirm {
+    position: fixed;
+    inset: 0;
+    z-index: 9500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.reset-confirm.is-open {
+    display: flex;
+}
+
+.reset-confirm.is-closing {
+    animation: reset-out 0.22s ease-in forwards;
+    pointer-events: none;
+}
+
+.reset-backdrop {
+    position: absolute;
+    inset: 0;
+    background:
+        radial-gradient(58% 50% at 50% 40%, rgba(255, 42, 95, 0.16), transparent 70%),
+        radial-gradient(52% 46% at 50% 60%, rgba(0, 240, 255, 0.1), transparent 72%),
+        rgba(4, 7, 12, 0.9);
+    -webkit-backdrop-filter: blur(6px);
+    backdrop-filter: blur(6px);
+    animation: reset-fade 0.25s ease-out both;
+}
+
+.reset-card {
+    position: relative;
+    width: min(460px, 100%);
+    max-height: calc(100dvh - 2rem);
+    overflow: hidden auto;
+    padding: 1.35rem 1.3rem 1.2rem;
+    text-align: center;
+    background:
+        linear-gradient(180deg, rgba(26, 16, 24, 0.98), rgba(8, 12, 20, 0.99));
+    border: 1px solid rgba(255, 42, 95, 0.62);
+    border-radius: 14px;
+    clip-path: polygon(0 0, calc(100% - 18px) 0, 100% 18px, 100% 100%, 18px 100%, 0 calc(100% - 18px));
+    box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.75),
+        0 0 46px rgba(255, 42, 95, 0.22),
+        inset 0 0 42px rgba(0, 240, 255, 0.05);
+    animation: reset-card-in 0.42s cubic-bezier(0.2, 0.9, 0.25, 1) both;
+}
+
+/* grade cibernética de fundo, bem discreta */
+.reset-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(0, 240, 255, 0.055) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 240, 255, 0.055) 1px, transparent 1px);
+    background-size: 22px 22px;
+    -webkit-mask-image: radial-gradient(circle at 50% 42%, #000 0%, transparent 78%);
+    mask-image: radial-gradient(circle at 50% 42%, #000 0%, transparent 78%);
+    pointer-events: none;
+}
+
+/* varredura vertical (scanline) contínua */
+.reset-scan {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    height: 30%;
+    background: linear-gradient(
+        180deg,
+        transparent 0%,
+        rgba(0, 240, 255, 0.10) 45%,
+        rgba(255, 42, 95, 0.10) 55%,
+        transparent 100%
+    );
+    animation: reset-scan 2.8s linear infinite;
+    pointer-events: none;
+}
+
+.reset-kicker {
+    position: relative;
+    margin: 0 0 0.9rem;
+    font-family: ui-monospace, "JetBrains Mono", monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #ff7d9c;
+}
+
+.reset-kicker i {
+    margin-right: 0.4rem;
+    color: #ff2a5f;
+}
+
+.reset-icon {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto 0.9rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 42, 95, 0.6);
+    background: radial-gradient(circle at 50% 35%, rgba(255, 42, 95, 0.22), rgba(8, 12, 20, 0.9) 72%);
+    color: #ff2a5f;
+    font-size: 1.35rem;
+    box-shadow: 0 0 26px rgba(255, 42, 95, 0.32);
+    animation: reset-icon-pulse 1.8s ease-in-out infinite;
+}
+
+.reset-icon::after {
+    content: "";
+    position: absolute;
+    inset: -7px;
+    border-radius: 50%;
+    border: 1px dashed rgba(0, 240, 255, 0.4);
+    animation: reset-spin 9s linear infinite;
+}
+
+.reset-title {
+    position: relative;
+    margin: 0 0 0.45rem;
+    font-family: "Exo 2", sans-serif;
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fff;
+    animation: reset-glitch 2.6s steps(1) infinite;
+}
+
+.reset-text {
+    position: relative;
+    margin: 0 auto 0.9rem;
+    max-width: 34ch;
+    font-size: 0.92rem;
+    line-height: 1.55;
+    color: #c4d2e2;
+}
+
+.reset-stats {
+    position: relative;
+    display: flex;
+    gap: 0.55rem;
+    justify-content: center;
+    margin: 0 0 0.85rem;
+}
+
+.reset-stats div {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0.45rem 0.55rem;
+    border: 1px solid rgba(255, 42, 95, 0.28);
+    border-radius: 8px;
+    background: rgba(255, 42, 95, 0.06);
+}
+
+.reset-stats span {
+    display: block;
+    font-family: ui-monospace, monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.14em;
+    color: #8ea1b8;
+}
+
+.reset-stats strong {
+    display: block;
+    margin-top: 0.1rem;
+    font-family: "Exo 2", sans-serif;
+    font-size: 1.1rem;
+    color: #ff2a5f;
+}
+
+.reset-note {
+    position: relative;
+    margin: 0 0 1rem;
+    font-size: 0.76rem;
+    color: #8ea1b8;
+}
+
+.reset-note i {
+    margin-right: 0.35rem;
+    color: #00f0ff;
+}
+
+.reset-actions {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+    justify-content: center;
+}
+
+.reset-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 44px;
+    padding: 0 1.1rem;
+    border-radius: 0;
+    font-family: "Exo 2", sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    clip-path: polygon(0 0, calc(100% - 10px) 0, 100% 10px, 100% 100%, 10px 100%, 0 calc(100% - 10px));
+    transition: transform 0.15s, box-shadow 0.2s, background 0.2s, color 0.2s;
+}
+
+.reset-btn:disabled {
+    cursor: wait;
+    opacity: 0.85;
+}
+
+.reset-btn-cancel {
+    border: 1px solid rgba(148, 163, 184, 0.45);
+    background: rgba(148, 163, 184, 0.08);
+    color: #d3deea;
+}
+
+.reset-btn-cancel:hover {
+    border-color: #00f0ff;
+    color: #00f0ff;
+    background: rgba(0, 240, 255, 0.08);
+}
+
+.reset-btn-danger {
+    border: 1px solid #ff2a5f;
+    background: linear-gradient(135deg, #ff2a5f, #ff007f);
+    color: #0a0d14;
+    box-shadow: 0 0 20px rgba(255, 42, 95, 0.42);
+}
+
+.reset-btn-danger:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 0 30px rgba(255, 42, 95, 0.62);
+}
+
+/* "purga": glitch + flash antes de apagar de verdade */
+.reset-card.is-purging {
+    animation: reset-purge 0.66s ease-in both;
+}
+
+/* ícone do botão do topo girando enquanto limpa */
+#reset-btn.is-resetting {
+    border-color: #ff2a5f;
+    color: #ff2a5f;
+    box-shadow: 0 0 18px rgba(255, 42, 95, 0.45);
+}
+
+#reset-btn.is-resetting i {
+    animation: reset-spin 0.7s linear infinite;
+}
+
+@keyframes reset-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes reset-out {
+    to { opacity: 0; }
+}
+
+@keyframes reset-card-in {
+    0% {
+        opacity: 0;
+        transform: translateY(18px) scale(0.94);
+        filter: blur(7px);
+    }
+    55% {
+        opacity: 1;
+        filter: blur(0);
+    }
+    72% {
+        transform: translateY(0) scale(1.015);
+    }
+    84% {
+        transform: translateX(-2px);
+    }
+    92% {
+        transform: translateX(2px);
+    }
+    100% {
+        opacity: 1;
+        transform: none;
+        filter: none;
+    }
+}
+
+@keyframes reset-scan {
+    0% { transform: translateY(-120%); }
+    100% { transform: translateY(330%); }
+}
+
+@keyframes reset-icon-pulse {
+    0%, 100% { box-shadow: 0 0 22px rgba(255, 42, 95, 0.28); }
+    50% { box-shadow: 0 0 38px rgba(255, 42, 95, 0.55); }
+}
+
+@keyframes reset-spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes reset-glitch {
+    0%, 91%, 100% {
+        text-shadow: 0 0 18px rgba(255, 42, 95, 0.28);
+        transform: none;
+    }
+    92% {
+        text-shadow: -2px 0 #00f0ff, 2px 0 #ff2a5f;
+        transform: translateX(1px);
+    }
+    94% {
+        text-shadow: 2px 0 #00f0ff, -2px 0 #ff2a5f;
+        transform: translateX(-1px);
+    }
+    96% {
+        text-shadow: -1px 0 #00f0ff, 1px 0 #ff2a5f;
+        transform: none;
+    }
+}
+
+@keyframes reset-purge {
+    0% { transform: none; filter: none; opacity: 1; }
+    16% { transform: translateX(-4px); filter: brightness(1.9) saturate(1.5); }
+    32% { transform: translateX(4px); }
+    48% { transform: translateX(-3px); filter: brightness(2.6) hue-rotate(-18deg); }
+    62% { transform: translateX(3px); opacity: 0.9; }
+    78% { transform: scale(0.98); opacity: 0.55; filter: brightness(3); }
+    100% { transform: scale(0.9); opacity: 0; filter: brightness(3.4); }
+}
+
+@media (max-width: 480px) {
+    .reset-card {
+        padding: 1.1rem 0.95rem 1rem;
+    }
+
+    .reset-title {
+        font-size: 1.25rem;
+    }
+
+    .reset-text {
+        font-size: 0.85rem;
+    }
+
+    .reset-btn {
+        flex: 1 1 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .reset-confirm,
+    .reset-confirm *,
+    .reset-card.is-purging,
+    #reset-btn.is-resetting i {
+        animation: none !important;
+    }
+}
+
